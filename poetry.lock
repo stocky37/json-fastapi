@@ -120,6 +120,14 @@ version = "1.4.18"
 license = ["editdistance"]
 
 [[package]]
+category = "main"
+description = "Parse and format link headers according to RFC 5988 \"Web Linking\""
+name = "linkheader"
+optional = false
+python-versions = "*"
+version = "0.4.3"
+
+[[package]]
 category = "dev"
 description = "More routines for operating on iterables, beyond itertools"
 name = "more-itertools"
@@ -344,7 +352,7 @@ version = "0.1.9"
 all = ["fastapi", "tinydb"]
 
 [metadata]
-content-hash = "2bc8cba2418321b11750646d0ccd4e2fc1a0c75e5fd8d0cdde2f7a03661f23a0"
+content-hash = "25647c09dde78d5412d017ea53eb8eb43af2b47d36b1f6c1788b05b049ae7161"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -390,6 +398,9 @@ filelock = [
 identify = [
     {file = "identify-1.4.18-py2.py3-none-any.whl", hash = "sha256:9f53e80371f2ac7c969eefda8efaabd4f77c6300f5f8fc4b634744a0db8fe5cc"},
     {file = "identify-1.4.18.tar.gz", hash = "sha256:de4e1de6c23f52b71c8a54ff558219f3783ff011b432f29360d84a8a31ba561c"},
+]
+linkheader = [
+    {file = "LinkHeader-0.4.3.tar.gz", hash = "sha256:7fbbc35c0ba3fbbc530571db7e1c886e7db3d718b29b345848ac9686f21b50c3"},
 ]
 more-itertools = [
     {file = "more-itertools-8.3.0.tar.gz", hash = "sha256:558bb897a2232f5e4f8e2399089e35aecb746e1f9191b6584a151647e89267be"},

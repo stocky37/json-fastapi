@@ -1,9 +1,11 @@
 import json
 from os import DirEntry, scandir
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from slugify import slugify
 from tinydb import where, TinyDB
+
+from json_fastapi.pagination import Pagination
 
 
 class EntityEndpoint(object):
@@ -27,8 +29,8 @@ class EntityEndpoint(object):
                     table.insert(json.load(f))
         return table
 
-    async def get_all(self):
-        return self.table.all()
+    async def get_all(self, pager: Pagination = Depends(Pagination)):
+        return pager.paginate(self.table.all())
 
     async def get_one(self, name: str):
         return self.table.get(where("slug") == slugify(name))
