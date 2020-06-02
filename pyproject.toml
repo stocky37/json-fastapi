@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "json-fastapi"
-version = "0.1.0"
+version = "0.1.0-alpha.0"
 description = "Library to add basic read-only JSON APIs to FastAPI projects"
 authors = ["Tom Stockwell <2060486+stocky37@users.noreply.github.com>"]
 packages = [
