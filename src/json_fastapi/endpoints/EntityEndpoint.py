@@ -1,4 +1,5 @@
 import json
+from dataclasses import dataclass
 from os import DirEntry, scandir
 from typing import Dict
 
@@ -9,6 +10,12 @@ from tinydb import where, TinyDB
 from json_fastapi.RouteOptions import RouteOptions
 from json_fastapi.pagination import Pagination
 from json_fastapi.util import as_dict
+
+
+@dataclass
+class EntityEndpointOptions:
+    id_field: str = "id"
+    slugify_id: bool = True
 
 
 class EntityEndpoint(object):
@@ -22,10 +29,12 @@ class EntityEndpoint(object):
         app: FastAPI,
         db: TinyDB,
         *,
-        route_opts: Dict[str, RouteOptions] = None
+        route_opts: Dict[str, RouteOptions] = None,
+        opts: EntityEndpointOptions = EntityEndpointOptions()
     ):
         self.name = name
         self.db = db
+        self.opts = opts
         self.route_opts = {} if route_opts is None else route_opts
         self.table = self._build_table(path)
         self._add_routes(app)
@@ -52,8 +61,11 @@ class EntityEndpoint(object):
                     table.insert(json.load(f))
         return table
 
+    def _slugify(self, str_: str) -> str:
+        return slugify(str_) if self.opts.slugify_id else str_
+
     async def get_all(self, pager: Pagination = Depends(Pagination)):
         return pager.paginate(self.table.all())
 
     async def get_one(self, name: str):
-        return self.table.get(where("slug") == slugify(name))
+        return self.table.get(where(self.opts.id_field) == self._slugify(name))
