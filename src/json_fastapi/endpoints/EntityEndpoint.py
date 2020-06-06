@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from os import DirEntry, scandir
 from typing import Dict
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from slugify import slugify
 from tinydb import where, TinyDB
 
@@ -68,4 +68,7 @@ class EntityEndpoint(object):
         return pager.paginate(self.table.all())
 
     async def get_one(self, name: str):
-        return self.table.get(where(self.opts.id_field) == self._slugify(name))
+        entity = self.table.get(where(self.opts.id_field) == self._slugify(name))
+        if not entity:
+            raise HTTPException(404, "Entity not found")
+        return entity
