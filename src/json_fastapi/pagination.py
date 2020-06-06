@@ -1,8 +1,9 @@
+import math
+
 from fastapi import Query
 from link_header import LinkHeader, Link
 from starlette.requests import Request
 from starlette.responses import Response
-import math
 
 
 class Pagination:
