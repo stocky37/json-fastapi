@@ -13,6 +13,7 @@ def init_api(
     app: FastAPI = FastAPI(),
     db: TinyDB = TinyDB(storage=MemoryStorage),
     route_opts=None,
+    opts=None,
 ) -> (FastAPI, TinyDB):
     if route_opts is None:
         route_opts = {}
@@ -20,5 +21,12 @@ def init_api(
     d: DirEntry
     for d in scandir(root_dir):
         if d.is_dir():
-            EntityEndpoint(d.name, d.path, app, db, route_opts=route_opts.get(d.name))
+            EntityEndpoint(
+                d.name,
+                d.path,
+                app,
+                db,
+                opts=opts.get(d.name),
+                route_opts=route_opts.get(d.name),
+            )
     return app, db
