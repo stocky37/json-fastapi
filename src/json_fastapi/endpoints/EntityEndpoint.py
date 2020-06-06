@@ -1,7 +1,7 @@
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from os import DirEntry, scandir
-from typing import Dict
+from typing import Dict, List
 
 from fastapi import FastAPI, Depends, HTTPException
 from slugify import slugify
@@ -14,7 +14,7 @@ from json_fastapi.util import as_dict
 
 @dataclass
 class EntityEndpointOptions:
-    id_field: str = "id"
+    id_fields: List[str] = field(default_factory=lambda: ["id", "name", "slug"])
     slugify_id: bool = True
 
 
@@ -68,7 +68,8 @@ class EntityEndpoint(object):
         return pager.paginate(self.table.all())
 
     async def get_one(self, name: str):
-        entity = self.table.get(where(self.opts.id_field) == self._slugify(name))
-        if not entity:
-            raise HTTPException(404, "Entity not found")
-        return entity
+        for id_field in self.opts.id_fields:
+            entity = self.table.get(where(id_field) == self._slugify(name))
+            if entity is not None:
+                return entity
+        raise HTTPException(404, "Entity not found")
