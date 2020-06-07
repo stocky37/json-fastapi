@@ -10,6 +10,7 @@ from tinydb import where, TinyDB
 
 from json_fastapi.pagination import Pagination
 from util.fields import FieldsFilter
+from util.sorting import Sorting
 
 
 @dataclass
@@ -34,8 +35,9 @@ class Endpoint:
         self,
         pager: Pagination = Depends(Pagination),
         fields_filter: FieldsFilter = Depends(),
+        sorting: Sorting = Depends(),
     ):
-        return fields_filter.filter_all(pager.paginate(self.table.all()))
+        return fields_filter.filter_all(pager.paginate(sorting.sort(self.table.all())))
 
     async def get_by_id(self, name: str, fields_filter: FieldsFilter = Depends()):
         for id_field in self.opts.id_fields:
