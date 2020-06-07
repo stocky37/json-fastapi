@@ -9,6 +9,7 @@ from slugify import slugify
 from tinydb import where, TinyDB
 
 from json_fastapi.pagination import Pagination
+from util.fields import FieldsFilter
 
 
 @dataclass
@@ -29,14 +30,18 @@ class Endpoint:
         self.opts = EndpointOptions() if opts is None else opts
         self.table = self._build_table(path, db)
 
-    async def get_all(self, pager: Pagination = Depends(Pagination)):
-        return pager.paginate(self.table.all())
+    async def get_all(
+        self,
+        pager: Pagination = Depends(Pagination),
+        fields_filter: FieldsFilter = Depends(),
+    ):
+        return fields_filter.filter_all(pager.paginate(self.table.all()))
 
-    async def get_by_id(self, name: str):
+    async def get_by_id(self, name: str, fields_filter: FieldsFilter = Depends()):
         for id_field in self.opts.id_fields:
             entity = self.table.get(where(id_field) == self._slugify(name))
             if entity is not None:
-                return entity
+                return fields_filter.filter(entity)
         raise HTTPException(404, "Entity not found")
 
     def add_routes(self, app: FastAPI) -> FastAPI:
