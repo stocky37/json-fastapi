@@ -87,6 +87,15 @@ def test_get_items_last_page():
     assert_no_link(links, "next")
 
 
+def test_get_items_all():
+    response = client.get("/drivers?per_page=0")
+    body = response.json()
+
+    assert response.status_code == HTTPStatus.OK
+    assert len(body) == 20
+    assert response.headers.get("Link") is None
+
+
 def test_get_items_sorted():
     response = client.get("/drivers?sort_by=id")
     assert response.status_code == HTTPStatus.OK

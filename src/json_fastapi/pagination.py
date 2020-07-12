@@ -7,7 +7,7 @@ from starlette.responses import Response
 
 
 class Pagination:
-    _default_page: int = 1
+    _first_page: int = 1
     _default_per_page: int = 100
     _max_per_page: int = 1000
 
@@ -15,19 +15,20 @@ class Pagination:
         self,
         request: Request,
         response: Response,
-        page: int = Query(_default_page, ge=1),
-        per_page: int = Query(_default_per_page, ge=1, le=_max_per_page),
+        page: int = Query(_first_page, ge=1),
+        per_page: int = Query(_default_per_page, ge=0, le=_max_per_page),
     ):
-        self.page = page
-        self.per_page = per_page
         self.request = request
         self.response = response
+        self.do_paginate = per_page > 0
+        self.page = page if self.do_paginate else 1
+        self.per_page = per_page
 
     def offset(self) -> int:
         return (self.page - 1) * self.per_page
 
     def first_page(self) -> int:
-        return self._default_page
+        return self._first_page
 
     def last_page(self, count: int) -> int:
         return math.ceil(count / self.per_page)
@@ -51,6 +52,9 @@ class Pagination:
         return self.request.url.include_query_params(page=self.last_page(count))
 
     def paginate(self, item_list: list):
+        if not self.do_paginate:
+            return item_list
+
         count = len(item_list)
         links = [
             Link(self.request.url, rel="self"),
