@@ -39,9 +39,13 @@ class Endpoint:
     ):
         return fields_filter.filter_all(pager.paginate(sorting.sort(self.table.all())))
 
-    async def get_by_id(self, name: str, fields_filter: FieldsFilter = Depends()):
+    async def get_by_id(self, name, fields_filter: FieldsFilter = Depends()):
         for id_field in self.opts.id_fields:
-            entity = self.table.get(where(id_field) == self._slugify(name))
+            entity = self.table.get(
+                where(id_field).test(
+                    lambda val: self._slugify(str(val)) == self._slugify(name)
+                )
+            )
             if entity is not None:
                 return fields_filter.filter(entity)
         raise HTTPException(404, "Entity not found")
