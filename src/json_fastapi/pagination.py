@@ -69,3 +69,6 @@ class Pagination:
         self.response.headers["Link"] = str(LinkHeader(links))
 
         return item_list[self.offset() : self.offset() + self.per_page]
+
+    def __repr__(self):
+        return str(self.__dict__)

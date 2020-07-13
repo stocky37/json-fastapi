@@ -76,3 +76,6 @@ class Endpoint:
 
     def _slugify(self, str_: str) -> str:
         return slugify(str_) if self.opts.slugify_id else str_
+
+    def __repr__(self):
+        return str(self.__dict__)

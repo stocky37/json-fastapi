@@ -33,3 +33,6 @@ class Sorting:
             if self.do_sort
             else objs
         )
+
+    def __repr__(self):
+        return str(self.__dict__)

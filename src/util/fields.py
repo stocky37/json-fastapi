@@ -20,3 +20,6 @@ class FieldsFilter:
 
     def filter_all(self, objs: List[Dict]) -> List[Dict]:
         return list(map(self.filter, objs))
+
+    def __repr__(self):
+        return str(self.__dict__)
