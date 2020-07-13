@@ -14,16 +14,22 @@ class Sorting:
     def __init__(
         self, sort_by: str = Query(None),
     ):
-        if sort_by.startswith("-"):
-            self.sort_direction = SortDirection.DESC
-            self.sort_field = sort_by[1:]
-        else:
-            self.sort_direction = SortDirection.ASC
-            self.sort_field = sort_by
+        self.do_sort = bool(sort_by)
+        if self.do_sort:
+            if sort_by.startswith("-"):
+                self.sort_direction = SortDirection.DESC
+                self.sort_field = sort_by[1:]
+            else:
+                self.sort_direction = SortDirection.ASC
+                self.sort_field = sort_by
 
     def sort(self, objs: List[Dict]):
-        return sorted(
-            objs,
-            key=itemgetter(self.sort_field),
-            reverse=self.sort_direction == SortDirection.DESC,
+        return (
+            sorted(
+                objs,
+                key=itemgetter(self.sort_field),
+                reverse=self.sort_direction == SortDirection.DESC,
+            )
+            if self.do_sort
+            else objs
         )
